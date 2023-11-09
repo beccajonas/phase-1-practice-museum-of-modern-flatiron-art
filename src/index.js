@@ -74,6 +74,9 @@ function renderExhibit(exhibit) {
     let description = document.querySelector('#exhibit-description')
     description.innerText = exhibit.description
 
+    let image = document.querySelector('#exhibit-image')
+    image.src = exhibit.image
+
     for (let comment of exhibit.comments) {
         renderComments(comment)
     }
@@ -83,6 +86,19 @@ function renderExhibit(exhibit) {
     button.addEventListener('click', () => {
         clickCount++
         ticketsBought.innerText = `${clickCount} Tickets Bought`
+
+        fetch(`http://localhost:3000/current-exhibits/${exhibit.id}`, {
+            method: 'PATCH',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({tickets_bought: clickCount})
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            ticketsBought.innerText = `${clickCount} Tickets Bought`
+        })
     })
 }
 
